@@ -1,1 +1,1 @@
-require('./utils/server')
+require('./server')

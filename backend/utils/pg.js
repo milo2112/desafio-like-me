@@ -1,5 +1,6 @@
 require('dotenv').config()
 const { Pool } = require('pg')
+const { v4: uuidv4 } = require('uuid')
 
 const config = {
   user: process.env.PG_USER,
@@ -11,29 +12,30 @@ const config = {
 }
 
 const pool = new Pool(config)
-console.log(`${process.env.PG_GET} ${process.env.PG_TABLE};`)
-console.log(process.env.PG_TABLE)
-
-/* const getPosts = async () => {
-  try {
-    const dbRowsPosts = await pool.query(`select * friom ${process.env.PG_TABLE};`)
-    return dbRowsPosts.rows
-  } catch ({ code, message }) {
-    console.log({ code, message })
-  }
-} */
 
 const executeQuery = async (query, values) => pool
   .query(query, values)
   .then(({ rows }) => rows)
   .catch(({ code, message }) => ({ code, message }))
-
+/*
 const readPosts = async () => {
-  const dbRowsPosts = await executeQuery(`${process.env.PG_GET} ${process.env.PG_TABLE};`)
+  const query = `${process.env.PG_QUERY_GET} ${process.env.PG_TABLE};`
+  // console.log(`query--> ${query}`)
+  const dbRowsPosts = await executeQuery(query)
+  // console.log(`dbRowsPosts--> ${dbRowsPosts}`)
   if (dbRowsPosts?.code) return console.error(`Error: ${dbRowsPosts}`)
   return dbRowsPosts.rows
 }
+*/
+const readPosts = async () => await executeQuery('select * from posts;')
+
+const createPosts = async ({ titulo, url: img, descripcion }) => {
+  const query = 'insert into posts(id, titulo, img, descripcion) values($1, $2, $3, $4) RETURNING *;'
+  const postValues = [uuidv4(), titulo, img, descripcion]
+  return await executeQuery(query, postValues)
+}
 
 module.exports = {
-  readPosts
+  readPosts,
+  createPosts
 }

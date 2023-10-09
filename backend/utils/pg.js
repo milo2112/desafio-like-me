@@ -17,17 +17,11 @@ const executeQuery = async (query, values) => pool
   .query(query, values)
   .then(({ rows }) => rows)
   .catch(({ code, message }) => ({ code, message }))
-/*
+
 const readPosts = async () => {
-  const query = `${process.env.PG_QUERY_GET} ${process.env.PG_TABLE};`
-  // console.log(`query--> ${query}`)
-  const dbRowsPosts = await executeQuery(query)
-  // console.log(`dbRowsPosts--> ${dbRowsPosts}`)
-  if (dbRowsPosts?.code) return console.error(`Error: ${dbRowsPosts}`)
-  return dbRowsPosts.rows
+  const dbResponse = await executeQuery('select * from posts;')
+  return dbResponse
 }
-*/
-const readPosts = async () => await executeQuery('select * from posts;')
 
 const createPosts = async ({ titulo, url: img, descripcion }) => {
   const query = 'insert into posts(id, titulo, img, descripcion) values($1, $2, $3, $4) RETURNING *;'

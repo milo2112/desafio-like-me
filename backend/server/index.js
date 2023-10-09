@@ -9,8 +9,8 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-app.get('/posts', (_, res) => {
-  res.status(200).json(readPosts())
+app.get('/posts', async (_, res) => {
+  res.status(200).json(await readPosts())
 })
 
 app.post('/posts', async (req, res) => {

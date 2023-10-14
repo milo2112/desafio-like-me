@@ -42,8 +42,14 @@ const updateLikes = async (id) => {
   return await executeQuery(query, postValues)
 }
 
+const deletePost = async (id) => {
+  const query = 'DELETE FROM posts WHERE id = $1 RETURNING *;'
+  return await executeQuery(query, [id])
+}
+
 module.exports = {
   readPosts,
   createPosts,
-  updateLikes
+  updateLikes,
+  deletePost
 }

@@ -19,8 +19,7 @@ const executeQuery = async (query, values) => pool
   .catch(({ code, message }) => ({ code, message }))
 
 const readPosts = async () => {
-  const dbResponse = await executeQuery('SELECT * FROM posts;')
-  return dbResponse
+  return await executeQuery('SELECT * FROM posts;')
 }
 
 const readPost = async (id) => {

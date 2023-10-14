@@ -19,8 +19,13 @@ const executeQuery = async (query, values) => pool
   .catch(({ code, message }) => ({ code, message }))
 
 const readPosts = async () => {
-  const dbResponse = await executeQuery('select * from posts;')
+  const dbResponse = await executeQuery('SELECT * FROM posts;')
   return dbResponse
+}
+
+const readPost = async (id) => {
+  const query = 'SELECT * FROM posts WHERE id = $1;'
+  return await executeQuery(query, [id])
 }
 
 const createPosts = async ({ titulo, url: img, descripcion }) => {
@@ -29,7 +34,16 @@ const createPosts = async ({ titulo, url: img, descripcion }) => {
   return await executeQuery(query, postValues)
 }
 
+const updateLikes = async (id) => {
+  const postRecordToUpdate = await readPost(id)
+  const likes = Number(postRecordToUpdate[0].likes) + 1
+  const query = 'UPDATE posts SET likes = $1 WHERE id = $2 RETURNING *;'
+  const postValues = [likes, id]
+  return await executeQuery(query, postValues)
+}
+
 module.exports = {
   readPosts,
-  createPosts
+  createPosts,
+  updateLikes
 }

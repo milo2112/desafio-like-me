@@ -10,13 +10,16 @@ app.use(cors())
 app.use(express.json())
 
 app.get('/posts', async (_, res) => {
-  res.status(200).json(await readPosts())
+  readPosts()
+    .then((dbResponse) => res.status(dbResponse?.code ? 500 : 200).json(dbResponse))
+    .catch((error) => res.status(500).json(error))
 })
 
 app.post('/posts', async (req, res) => {
   const { titulo, url, descripcion } = req.body
-  const posts = await createPosts({ titulo, url, descripcion })
-  res.status(201).json(posts)
+  createPosts({ titulo, url, descripcion })
+    .then((dbResponse) => res.status(dbResponse?.code ? 500 : 201).json(dbResponse))
+    .catch((error) => res.status(500).json(error))
 })
 
 app.put('/posts/like/:id', async (req, res) => {

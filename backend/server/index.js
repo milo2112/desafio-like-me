@@ -2,7 +2,7 @@ require('dotenv').config()
 
 const cors = require('cors')
 const express = require('express')
-const { readPosts, createPosts, updateLikes } = require('../utils/pg')
+const { readPosts, createPosts, updateLikes, deletePost } = require('../utils/pg')
 const PORT = process.env.PORT ?? 3000
 const app = express()
 
@@ -20,12 +20,13 @@ app.post('/posts', async (req, res) => {
 })
 
 app.put('/posts/like/:id', async (req, res) => {
-  // const { id } = req.params
-  // const { likes } = req.body
-  // console.log(`así entran al server ${id}, ${likes}`)
-  // console.log(typeof likes)
-  // console.log(Number(likes))
   updateLikes(req.params.id)
+    .then((dbResponse) => res.status(dbResponse?.code ? 500 : 200).json(dbResponse))
+    .catch((error) => res.status(500).json(error))
+})
+
+app.delete('/posts/:id', async (req, res) => {
+  deletePost(req.params.id)
     .then((dbResponse) => res.status(dbResponse?.code ? 500 : 200).json(dbResponse))
     .catch((error) => res.status(500).json(error))
 })

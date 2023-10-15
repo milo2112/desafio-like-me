@@ -28,7 +28,7 @@ const readPost = async (id) => {
 }
 
 const createPosts = async ({ titulo, url: img, descripcion }) => {
-  const query = 'insert into posts(id, titulo, img, descripcion) values($1, $2, $3, $4) RETURNING *;'
+  const query = 'INSERT INTO posts(id, titulo, img, descripcion) VALUES($1, $2, $3, $4) RETURNING *;'
   const postValues = [uuidv4(), titulo, img, descripcion]
   return await executeQuery(query, postValues)
 }
@@ -37,8 +37,7 @@ const updateLikes = async (id) => {
   const postRecordToUpdate = await readPost(id)
   const likes = Number(postRecordToUpdate[0].likes) + 1
   const query = 'UPDATE posts SET likes = $1 WHERE id = $2 RETURNING *;'
-  const postValues = [likes, id]
-  return await executeQuery(query, postValues)
+  return await executeQuery(query, [likes, id])
 }
 
 const deletePost = async (id) => {

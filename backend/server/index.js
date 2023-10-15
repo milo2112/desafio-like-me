@@ -36,4 +36,4 @@ app.delete('/posts/:id', async (req, res) => {
 
 app.all('*', (_, res) => res.status(404).json({ code: 404, message: 'Page Not Found' }))
 
-app.listen(PORT, () => console.log(`Server started on: http://localhost:${PORT}`))
+app.listen(PORT, () => console.log(`Server started at: http://localhost:${PORT}`))

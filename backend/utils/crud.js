@@ -1,6 +1,12 @@
 const { v4: uuidv4 } = require('uuid')
 const { executeQuery } = require('./pg')
 
+const createPosts = async ({ titulo, url: img, descripcion }) => {
+  const query = 'INSERT INTO posts(id, titulo, img, descripcion) VALUES($1, $2, $3, $4) RETURNING *;'
+  const postValues = [uuidv4(), titulo, img, descripcion]
+  return await executeQuery(query, postValues)
+}
+
 const readPosts = async () => {
   return await executeQuery('SELECT * FROM posts;')
 }
@@ -8,12 +14,6 @@ const readPosts = async () => {
 const readPost = async (id) => {
   const query = 'SELECT * FROM posts WHERE id = $1;'
   return await executeQuery(query, [id])
-}
-
-const createPosts = async ({ titulo, url: img, descripcion }) => {
-  const query = 'INSERT INTO posts(id, titulo, img, descripcion) VALUES($1, $2, $3, $4) RETURNING *;'
-  const postValues = [uuidv4(), titulo, img, descripcion]
-  return await executeQuery(query, postValues)
 }
 
 const updateLikes = async (id) => {
@@ -29,8 +29,8 @@ const deletePost = async (id) => {
 }
 
 module.exports = {
-  readPosts,
   createPosts,
+  readPosts,
   updateLikes,
   deletePost
 }
